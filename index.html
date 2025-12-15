@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Planner Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <h1>Weekly Planner Pro</h1>
+            <p class="subtitle">Organize your week efficiently and productively</p>
+            <div class="header-stats" id="headerStats">
+                <div class="stat-item">
+                    <i class="fas fa-tasks"></i>
+                    <span id="totalTasks">0</span> tasks
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="completedTasks">0</span> completed
+                </div>
+                <div class="stat-item">
+                    <button class="icon-btn" onclick="exportData()" title="Export your data">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="icon-btn" onclick="importData()" title="Import data">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                </div>
+            </div>
+            <p class="data-info"><i class="fas fa-info-circle"></i> Your data is saved locally in your browser</p>
+        </header>
+
+        <!-- View selector -->
+        <div class="view-selector">
+            <button class="view-btn active" onclick="changeView('week')">
+                <i class="fas fa-th"></i> Week View
+            </button>
+            <button class="view-btn" onclick="changeView('day')">
+                <i class="fas fa-calendar-day"></i> Day View
+            </button>
+            <button class="view-btn" onclick="changeView('list')">
+                <i class="fas fa-list"></i> List View
+            </button>
+        </div>
+
+        <!-- Day navigator (only visible in day view) -->
+        <div id="dayNavigator" class="day-navigator" style="display: none;">
+            <button class="nav-btn" onclick="previousDay()">
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <h2 id="currentDayTitle">Monday</h2>
+            <button class="nav-btn" onclick="nextDay()">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="week-container" id="weekView">
+            <div class="day-card" data-day="monday">
+                <div class="day-header">
+                    <div class="day-title">
+                        <i class="fas fa-circle day-indicator"></i>
+                        <h2>Monday</h2>
+                    </div>
+                    <button class="add-task-btn" onclick="showAddTaskModal('monday')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="task-list" id="monday-tasks"></ul>
+            </div>
+
+            <div class="day-card" data-day="tuesday">
+                <div class="day-header">
+                    <div class="day-title">
+                        <i class="fas fa-circle day-indicator"></i>
+                        <h2>Tuesday</h2>
+                    </div>
+                    <button class="add-task-btn" onclick="showAddTaskModal('tuesday')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="task-list" id="tuesday-tasks"></ul>
+            </div>
+
+            <div class="day-card" data-day="wednesday">
+                <div class="day-header">
+                    <div class="day-title">
+                        <i class="fas fa-circle day-indicator"></i>
+                        <h2>Wednesday</h2>
+                    </div>
+                    <button class="add-task-btn" onclick="showAddTaskModal('wednesday')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="task-list" id="wednesday-tasks"></ul>
+            </div>
+
+            <div class="day-card" data-day="thursday">
+                <div class="day-header">
+                    <div class="day-title">
+                        <i class="fas fa-circle day-indicator"></i>
+                        <h2>Thursday</h2>
+                    </div>
+                    <button class="add-task-btn" onclick="showAddTaskModal('thursday')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="task-list" id="thursday-tasks"></ul>
+            </div>
+
+            <div class="day-card" data-day="friday">
+                <div class="day-header">
+                    <div class="day-title">
+                        <i class="fas fa-circle day-indicator"></i>
+                        <h2>Friday</h2>
+                    </div>
+                    <button class="add-task-btn" onclick="showAddTaskModal('friday')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="task-list" id="friday-tasks"></ul>
+            </div>
+
+            <div class="day-card" data-day="saturday">
+                <div class="day-header">
+                    <div class="day-title">
+                        <i class="fas fa-circle day-indicator"></i>
+                        <h2>Saturday</h2>
+                    </div>
+                    <button class="add-task-btn" onclick="showAddTaskModal('saturday')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="task-list" id="saturday-tasks"></ul>
+            </div>
+
+            <div class="day-card" data-day="sunday">
+                <div class="day-header">
+                    <div class="day-title">
+                        <i class="fas fa-circle day-indicator"></i>
+                        <h2>Sunday</h2>
+                    </div>
+                    <button class="add-task-btn" onclick="showAddTaskModal('sunday')">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="task-list" id="sunday-tasks"></ul>
+            </div>
+        </div>
+
+        <!-- Day view -->
+        <div class="day-view" id="dayView" style="display: none;">
+            <div class="day-card-large" id="dayViewContent">
+                <!-- Content is generated dynamically -->
+            </div>
+        </div>
+
+        <!-- List view -->
+        <div class="list-view" id="listView" style="display: none;">
+            <div class="list-container" id="listViewContent">
+                <!-- Content is generated dynamically -->
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="clear-btn" onclick="clearAllTasks()">
+                <i class="fas fa-trash-alt"></i> Clear All Week
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal to add tasks -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-plus-circle"></i>
+                <h2>New Task</h2>
+            </div>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label for="taskTitle">
+                        <i class="fas fa-pencil-alt"></i> Task Title
+                    </label>
+                    <input type="text" id="taskTitle" placeholder="Ex: Team meeting" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskTime">
+                        <i class="fas fa-clock"></i> Time (optional)
+                    </label>
+                    <input type="time" id="taskTime">
+                </div>
+                <div class="form-group">
+                    <label for="taskPriority">
+                        <i class="fas fa-flag"></i> Priority
+                    </label>
+                    <select id="taskPriority">
+                        <option value="low">🟢 Low</option>
+                        <option value="medium" selected>🟡 Medium</option>
+                        <option value="high">🔴 High</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-check"></i> Save Task
+                    </button>
+                    <button type="button" class="cancel-btn" onclick="closeModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="handleFileImport(event)">
+
+    <script src="logic.js"></script>
+</body>
+
+</html>
